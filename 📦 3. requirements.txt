@@ -1,0 +1,13 @@
+📦 3. requirements.txt
+INSTALL
+requests
+stem
+
+## 📦 Install Requirements
+
+Before running the tool, make sure you have Python 3 and `pip` installed.
+
+### 🔧 Step 1: Install Tor (if not already)
+```bash
+sudo apt update
+sudo apt install tor
