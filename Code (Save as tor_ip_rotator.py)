@@ -1,0 +1,75 @@
+# tor_ip_rotator.py
+
+import time
+import random
+import datetime
+import sys
+import subprocess
+
+# Auto-install required modules
+required = ['requests', 'stem']
+for module in required:
+    try:
+        __import__(module)
+    except ImportError:
+        print(f"[+] Installing missing module: {module}")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", module])
+
+import requests
+from stem import Signal
+from stem.control import Controller
+
+# Configuration
+TOR_CONTROL_PORT = 9051
+TOR_PASSWORD = 'mytorpassword'
+SOCKS_PROXY = 'socks5h://127.0.0.1:9050'
+
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+    "Mozilla/5.0 (X11; Linux x86_64)",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+    "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0)"
+]
+
+def rotate_ip():
+    try:
+        with Controller.from_port(port=TOR_CONTROL_PORT) as controller:
+            controller.authenticate(password=TOR_PASSWORD)
+            controller.signal(Signal.NEWNYM)
+            print("🔁 New Tor circuit requested...")
+    except Exception as e:
+        print(f"❌ IP rotation failed: {e}")
+
+def get_ip_info():
+    headers = {"User-Agent": random.choice(USER_AGENTS)}
+    proxies = {'http': SOCKS_PROXY, 'https': SOCKS_PROXY}
+    try:
+        response = requests.get("https://ipwhois.app/json/", proxies=proxies, headers=headers, timeout=10)
+        data = response.json()
+        return {
+            "Time": datetime.datetime.now().strftime("%H:%M:%S"),
+            "IP": data.get("ip"),
+            "City": data.get("city"),
+            "Country": data.get("country"),
+            "ISP": data.get("isp")
+        }
+    except Exception as e:
+        return {"Time": datetime.datetime.now().strftime("%H:%M:%S"), "Error": str(e)}
+
+def main():
+    print("🛡️ Tor IP Rotator (Ctrl+C to stop)\n")
+    count = 1
+    while True:
+        print(f"\n🔁 [{count}] Rotating IP...")
+        rotate_ip()
+        time.sleep(5)
+        info = get_ip_info()
+        print(f"🌍 [{count}] {info}")
+        count += 1
+        time.sleep(3)
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n🛑 Exiting...")
