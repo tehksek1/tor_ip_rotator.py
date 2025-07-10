@@ -1,0 +1,27 @@
+🔧 Step 2: Configure Tor
+Edit the tor config file:
+
+bash
+Copy
+Edit
+sudo nano /etc/tor/torrc
+Add or verify these lines:
+
+ini
+Copy
+Edit
+SocksPort 9050
+ControlPort 9051
+HashedControlPassword 16:YOUR_HASHED_PASSWORD
+To generate your hashed password:
+
+bash
+Copy
+Edit
+tor --hash-password yourpassword
+Restart Tor:
+
+bash
+Copy
+Edit
+sudo systemctl restart tor@default
