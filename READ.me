@@ -1,0 +1,102 @@
+# Tor IP Rotator 🌍🛡️
+
+A simple Python tool that routes your traffic through the Tor network and displays geolocated IP addresses. Automatically rotates your Tor identity and shows updated IP info.
+
+---
+
+## 📋 Features
+
+- 🔁 Automatically rotates Tor identity/IP
+- 🌐 Shows current IP, City, Country, ISP
+- 🧅 Works through Tor SOCKS proxy
+- ⚡ Fast, single-threaded execution
+- 🐧 Compatible with Kali Linux / Debian systems
+
+---
+
+## 📦 Requirements
+
+### System Requirements:
+- Python 3.x
+- Tor installed and enabled
+
+### Python Dependencies
+Create a file named `requirements.txt` with:
+```text
+requests
+stem
+```
+
+---
+
+## 🔧 Setup Instructions
+
+### 1. 🧅 Install Tor
+```bash
+sudo apt update
+sudo apt install tor
+```
+
+### 2. 🔐 Configure Tor Control Access
+Edit the Tor configuration:
+```bash
+sudo nano /etc/tor/torrc
+```
+Add the following lines:
+```ini
+SocksPort 9050
+ControlPort 9051
+HashedControlPassword 16:YOUR_HASHED_PASSWORD
+```
+To generate the hashed password:
+```bash
+tor --hash-password yourpassword
+```
+Restart Tor:
+```bash
+sudo systemctl restart tor@default
+```
+
+### 3. 📦 Install Python Dependencies
+#### a. Inside a virtual environment (recommended)
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+#### b. System-wide (Kali Linux)
+```bash
+pip install --break-system-packages -r requirements.txt
+```
+
+---
+
+## ▶️ Usage
+Run the script:
+```bash
+python3 tor_ip_rotator.py
+```
+
+Expected Output:
+```bash
+🔁 [1] Rotating IP...
+🌍 [1] {'Time': '14:05:22', 'IP': '185.220.101.1', 'City': 'Berlin', 'Country': 'Germany', 'ISP': 'Tor Project'}
+```
+
+---
+
+## 💡 Notes
+- Uses [ipwhois.app](https://ipwhois.app) for geolocation.
+- Runs over the Tor network for anonymity.
+- Do **not** use for illegal activity.
+
+---
+
+## 🛑 Disclaimer
+This project is for educational and ethical use only. Misuse is solely the user's responsibility.
+
+---
+
+## 📁 License
+MIT License © 2025
